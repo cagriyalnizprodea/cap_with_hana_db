@@ -1,0 +1,7 @@
+# SAP CAP - GitIgnore Listesi
+node_modules/
+gen/
+.cdsrc-private.json
+cf.exe
+*.log
+.env

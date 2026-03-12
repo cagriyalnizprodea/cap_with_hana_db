@@ -90,7 +90,6 @@ Bu projeyi GitHub'dan kendi bilgisayarınıza indirip SAP BTP üzerindeki HANA v
 
 ### 1. Kodu Bilgisayara İndirin (Clone)
 Terminali (veya Git Bash'i) açın ve projeyi indirmek istediğiniz klasöre giderek şu komutu çalıştırın:
-```bash
 git clone [https://github.com/cagriyalnizprodea/cap_with_hana_db.git](https://github.com/cagriyalnizprodea/cap_with_hana_db.git)
 
 İndirme bittikten sonra proje klasörünün içine girin:

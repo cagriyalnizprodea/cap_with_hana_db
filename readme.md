@@ -56,9 +56,18 @@ Bu projeyi kendi ortamınızda ayağa kaldırmak için sıfırdan yapmanız gere
 2. Ekranda **Enable Cloud Foundry** (Cloud Foundry'yi Aktifleştir) butonuna tıklayın.
 3. Sistem size benzersiz bir **Org Name** (Organizasyon ID, örn: `x9999xx9trial`) atayacak ve varsayılan olarak `dev` adında bir **Space** (Çalışma Alanı) yaratacaktır. Uygulamamız bu `dev` alanında koşacaktır.
 
+### 2.a. Kullanıcı Yetkilendirmesi (Role Collections - Çok Önemli!)
+HANA veritabanını kurabilmek ve sonrasında yönetebilmek (HANA Cockpit/Explorer'a girebilmek) için kendi kullanıcınıza admin yetkisi vermeniz şarttır.
+1. Subaccount (trial) içindeyken sol menüden **Security** (Güvenlik) -> **Users** (Kullanıcılar) sekmesine tıklayın.
+2. Listeden kendi e-posta adresinize tıklayın (Sağ tarafta bir detay paneli açılacak).
+3. Açılan panelde **Role Collections** (Rol Koleksiyonları) kısmının yanındaki üç noktaya veya **Assign Role Collection** butonuna basın.
+4. Çıkan listeden **`SAP HANA Cloud Administrator`** rolünü bulun, yanındaki kutucuğu işaretleyin ve **Assign** diyerek kaydedin. *(Garanti olması için `Space Developer` rolünün de sizde olduğundan emin olun).*
+
 ### 3. SAP HANA Cloud Veritabanının Kurulması
+> 🛑 **Sonsuz Yükleme (Infinite Loading) Hatası ve Çözümü:** İlerleyen adımlarda "Go to Application" diyerek SAP HANA Cloud Central ekranını açmaya çalıştığınızda sayfa sürekli "Loading" durumunda takılı kalıyorsa, sebebi tarayıcınızın (Brave, Gizli Sekme/Incognito veya AdBlocker) **üçüncü taraf çerezleri (third-party cookies)** engellemesidir. Adres çubuğundaki kalkan/göz ikonuna tıklayıp bu çerezlere mutlaka izin verin, aksi takdirde SAP kimliğinizi doğrulayamaz!
+
 1. Sol menüden **Instances and Subscriptions** sekmesine tıklayın.
-2. Sağ üstten **Create** (Oluştur) butonuna basarak yeni bir servis yaratma ekranını açın.
+2. Sağ üstten **Create** (Oluştur) butonuna basarak yeni bir servis yaratma ekranını açın. (Eğer SAP HANA Cloud Central ekranı açılırken yüklemede kalırsa üstteki 🛑 uyarıyı dikkate alın).
 3. Servis olarak **SAP HANA Cloud**'u seçin ve *SAP HANA Database* tipinde bir instance yaratın.
     * **Instance Name:** `trial_cap_db` (İstediğiniz ismi verebilirsiniz).
     * **Plan:** 'tools' seçin.
@@ -73,3 +82,40 @@ Bu projeyi kendi ortamınızda ayağa kaldırmak için sıfırdan yapmanız gere
 3. Açılan yan panelde **Environment:** `Cloud Foundry`, **Organization:** *(Kendi Org ID'niz)* ve **Space:** `dev` olarak seçip eşleştirmeyi kaydedin. 
 
 Artık veritabanınız VS Code üzerinden gelecek `cds deploy --to hana` komutlarını karşılamaya ve tablolarınızı oluşturmaya hazırdır!
+
+
+## 📥 Repoyu Bilgisayara İndirme ve Çalıştırma (Clone & Run)
+
+Bu projeyi GitHub'dan kendi bilgisayarınıza indirip SAP BTP üzerindeki HANA veritabanınızla bağlayarak çalıştırmak için şu adımları izleyin:
+
+### 1. Kodu Bilgisayara İndirin (Clone)
+Terminali (veya Git Bash'i) açın ve projeyi indirmek istediğiniz klasöre giderek şu komutu çalıştırın:
+```bash
+git clone [https://github.com/cagriyalnizprodea/cap_with_hana_db.git](https://github.com/cagriyalnizprodea/cap_with_hana_db.git)
+
+İndirme bittikten sonra proje klasörünün içine girin:
+cd cap_with_hana_db
+
+2. Kütüphaneleri Yükleyin (Install Dependencies)
+Güvenlik gereği node_modules klasörü Git'e yüklenmemiştir. Projenin ihtiyaç duyduğu SAP CAP ve HANA kütüphanelerini indirmek için klasörün içindeyken şu komutu çalıştırın:
+npm install
+
+3. SAP BTP Cloud Foundry'ye Bağlanın (Login)
+Lokaldeki kodunuzun buluttaki veritabanınızı görebilmesi için terminalden BTP'ye giriş yapmalısınız:
+cf login
+
+Sistem size BTP API URL'nizi soracaktır (Trial hesaplar için genelde https://api.cf.us10-001.hana.ondemand.com gibidir, BTP Cockpit ana sayfanızda yazar).
+
+E-posta ve şifrenizi girin.
+Karşınıza çıkan listeden kendi Organizasyonunuzu ve dev Space'inizi seçin.
+
+4. Tabloları HANA'ya Basın (Deploy)
+Buluttaki veritabanınız hazır, kodunuz hazır. Şimdi lokaldeki CDS modellerimizi (tabloları) gerçek HANA veritabanında fiziksel olarak yaratma vakti:
+cds deploy --to hana
+
+Not: Bu komut başarıyla çalıştığında, projenizin kök dizininde gizli bir .cdsrc-private.json dosyası oluşur. Bu dosya, HANA'ya bağlanmanız için gereken o gizli Service Key (şifreler) bilgilerini içerir ve .gitignore sayesinde asla GitHub'a gitmez.
+
+5. Sunucuyu Ayağa Kaldırın (Hybrid Mode)
+Son olarak, Node.js sunucumuzu lokalde başlatıp, veritabanı olarak buluttaki HANA'yı kullanmasını söylüyoruz:
+cds watch --profile hybrid
+

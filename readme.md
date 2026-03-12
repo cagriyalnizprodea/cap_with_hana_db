@@ -61,6 +61,7 @@ Bu projeyi kendi ortamınızda ayağa kaldırmak için sıfırdan yapmanız gere
 2. Sağ üstten **Create** (Oluştur) butonuna basarak yeni bir servis yaratma ekranını açın.
 3. Servis olarak **SAP HANA Cloud**'u seçin ve *SAP HANA Database* tipinde bir instance yaratın.
     * **Instance Name:** `trial_cap_db` (İstediğiniz ismi verebilirsiniz).
+    * **Plan:** 'tools' seçin.
     * **Administrator Password:** Veritabanı admini (`DBADMIN`) için güçlü bir şifre belirleyin ve unutmayın.
 4. 🛑 **KRİTİK ADIM (Güvenlik Duvarı):** Kurulum sihirbazındaki *Connections* (Bağlantılar) adımında varsayılan ayar sadece BTP içine izin verir. Lokal bilgisayarınızdan (VS Code üzerinden) bu veritabanına bağlanıp tablo basabilmek için bu ayarı kesinlikle **"Allow all IP addresses"** (Tüm IP adreslerine izin ver) olarak değiştirin.
 5. Kurulumu tamamlayın. Veritabanının durumunun `CREATING`'den `RUNNING`'e geçmesi yaklaşık 10-15 dakika sürebilir.
